@@ -1,0 +1,74 @@
+---
+title: "Best practices"
+---
+
+
+
+## Best Practices
+
+### Resource Estimation
+
+- **Start small**: Test with shorter time limits and smaller resource requests
+- **Monitor usage**: Use `sacct` and `seff` to check actual resource utilization
+- **Right-size requests**: Don't over-request resources you won't use
+
+### Job Organization
+
+- **Use descriptive job names** and organize output files
+- **Include error checking** in your scripts
+- **Use arrays** for parameter sweeps rather than submitting many individual jobs
+- **Clean up**: Remove unnecessary output files periodically
+
+### Example Resource Check
+
+```bash
+#!/bin/bash
+#SBATCH --job-name=resource_check
+#SBATCH --time=01:00:00
+#SBATCH --mem=1G
+
+# Print system information
+echo "Job started at: $(date)"
+echo "Running on node: $(hostname)"
+echo "Number of CPUs: $SLURM_CPUS_PER_TASK"
+echo "Memory allocated: $SLURM_MEM_PER_NODE MB"
+
+# Your actual work here
+python my_script.py
+
+echo "Job finished at: $(date)"
+```
+
+## Getting Help
+
+### System Documentation
+- Check your HPC system's documentation website
+- Look for system-specific examples and policies
+- Review partition/queue descriptions and limits
+
+### Useful Commands for Troubleshooting
+```bash
+# Check system limits
+scontrol show config
+
+# View partition details
+scontrol show partition PARTITION_NAME
+
+# Check node specifications
+scontrol show nodes
+
+# View your account associations
+sacctmgr show associations user=$USER
+```
+
+## Common Issues
+
+**Job doesn't start**: Check resource requests against partition limits
+
+**Job fails immediately**: Verify paths, modules, and permissions
+
+**Out of memory errors**: Increase memory request or optimize code
+
+**Time limit exceeded**: Increase time request or optimize algorithms
+
+Remember: HPC systems vary between institutions, so always consult your local documentation and support staff for system-specific guidance.

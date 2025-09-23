@@ -1,0 +1,197 @@
+---
+title: "Job scheduler"
+---
+
+
+## Introduction to Slurm
+
+Slurm (Simple Linux Utility for Resource Management) is a job scheduling system used by many HPC clusters to manage computational resources fairly among users.
+
+### Key Slurm Concepts
+
+**Jobs**: Computational tasks submitted to the scheduler
+
+**Nodes**: Individual computers in the cluster
+
+**Partitions/Queues**: Groups of nodes with similar characteristics  
+
+**Allocation**: Resources (nodes, CPUs, memory) assigned to your job
+
+
+
+## Submitting Jobs
+
+```bash
+# Submit a job script
+sbatch myjob.slurm
+```
+
+### Basic Job
+
+```bash
+#!/bin/bash
+#SBATCH --account=ABC012345
+#SBATCH --partition=test
+#SBATCH --job-name=my_serial_job
+#SBATCH --output=output_%j.txt
+#SBATCH --error=error_%j.txt
+#SBATCH --time=01:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=4G
+
+
+# Load required modules
+module load languages/python/3.7.12
+
+# Change to working directory
+cd $SLURM_SUBMIT_DIR
+
+# Run your program
+python my_analysis.py
+```
+
+::: {.callout-important}
+### Loading modules
+
+You need to load the software you need. You can list the modules available with
+```bash
+module avail
+```
+
+and load them with `load` option, e.g.
+
+```bash
+module load languages/python/3.7.12
+```
+:::
+
+### Important Slurm Directives
+
+| Directive | Purpose | Example |
+|-----------|---------|---------|
+| `--account` | Project name to use | `#SBATCH --account=ABC012345` |
+| `--partition` | Queue/partition to use | `#SBATCH --partition=compute` |
+| `--job-name` | Set job name | `#SBATCH --job-name=analysis` |
+| `--time` | Maximum runtime | `#SBATCH --time=12:00:00` |
+| `--nodes` | Number of nodes | `#SBATCH --nodes=2` |
+| `--ntasks` | Number of tasks/processes | `#SBATCH --ntasks=8` |
+| `--cpus-per-task` | CPUs per task | `#SBATCH --cpus-per-task=4` |
+| `--mem` | Memory per node | `#SBATCH --mem=32G` |
+| `--mem-per-cpu` | Memory per CPU | `#SBATCH --mem-per-cpu=4G` |
+| `--gres` | Generic resources (GPUs) | `#SBATCH --gres=gpu:2` |
+
+
+
+## Managing Jobs
+
+### Checking System Status
+
+```bash
+# View available partitions/queues
+sinfo
+
+# View node information  
+sinfo -N -l
+
+# Check your job queue
+squeue -u $USER
+
+# Check all jobs in system
+squeue
+
+# View detailed job information
+scontrol show job JOBID
+```
+
+### Monitoring Jobs
+
+```bash
+# Check status of specific job
+squeue -j JOBID
+
+# Check your running jobs
+squeue -u $USER -t RUNNING
+
+# Check your pending jobs  
+squeue -u $USER -t PENDING
+
+# Get detailed job information
+scontrol show job JOBID
+
+# View job accounting information
+sacct -j JOBID --format=JobID,JobName,MaxRSS,Elapsed
+```
+
+### Controlling Jobs
+
+```bash
+# Cancel a job
+scancel JOBID
+
+# Cancel all your jobs
+scancel -u $USER
+
+# Cancel jobs by name
+scancel --name=my_job_name
+
+# Hold a pending job
+scontrol hold JOBID
+
+# Release a held job
+scontrol release JOBID
+```
+
+
+## Array Jobs
+
+```bash
+#!/bin/bash
+#SBATCH --account=ABC012345
+#SBATCH --partition=test
+#SBATCH --job-name=array_job
+#SBATCH --output=array_%A_%a.out
+#SBATCH --error=array_%A_%a.err
+#SBATCH --array=1-100
+#SBATCH --time=00:30:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --mem=2G
+
+# Use array task ID to process different input files
+input_file="input_${SLURM_ARRAY_TASK_ID}.txt"
+output_file="output_${SLURM_ARRAY_TASK_ID}.txt"
+
+# Load required modules
+module load languages/python/3.7.12
+
+# Run analysis on this array element
+python process_data.py $input_file $output_file
+```
+
+## GPU Jobs
+
+```bash
+#!/bin/bash
+#SBATCH --account=ABC012345
+#SBATCH --partition=gpu_short
+#SBATCH --job-name=gpu_job
+#SBATCH --output=gpu_output_%j.txt
+#SBATCH --error=gpu_error_%j.txt
+#SBATCH --time=04:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --gres=gpu:1
+#SBATCH --mem=16G
+
+# Load required modules
+module load languages/python/3.7.12
+
+# Load CUDA module
+module load cuda/11.8.0-rgxs
+
+# Run GPU program
+python my_gpu_script.py
+```
+

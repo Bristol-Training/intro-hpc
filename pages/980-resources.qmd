@@ -1,0 +1,23 @@
+---
+title: Resources
+---
+
+(needs SSO)
+[University of Bristol ACRC documentation](https://www.acrc.bris.ac.uk/protected/hpc-docs/training/intro-to-hpc-slurm/intro2hpc.html)
+
+
+
+
+
+
+#### Python script example
+
+**hello_loop.py**
+
+```{.python}
+import time
+
+for i in range(1, 31):
+    print(f"Hello {i}")
+    time.sleep(2)
+```

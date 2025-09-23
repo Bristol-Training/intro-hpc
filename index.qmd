@@ -1,0 +1,39 @@
+---
+title: Introduction
+---
+
+
+Welcome to this introduction to High Performance Computing (HPC)! This course covers essential skills for accessing and using computational resources effectively. HPC systems are powerful computing resources that enable researchers to tackle computationally intensive problems that would be impossible or impractical on standard computers. Here we will explore how to connect to HPC systems remotely, use the *Slurm* (*Simple Linux Utility for Resource Management*) workload manager to submit and manage jobs, and follow best practices for fair HPC usage. 
+
+Most HPC systems run on *Linux* operating systems and use command line interfaces, building upon [foundational CLI skills](https://bristol-training.github.io/intro-cli/).
+
+
+```
+          _nnnn_                      
+         dGGGGMMb     ,"""""""""""""".
+        @p~qp~~qMb    | Linux Rules! |
+        M|@||@) M|   _;..............'
+        @,----.JM| -'
+       JS^\__/  qKL
+      dZP        qKRb
+     dZP          qKKb
+    fZP            SMMb
+    HZM            MMMM
+    FqM            MMMM
+  __| ".        |\dS"qML
+  |    `.       | `' \Zq
+ _)      \.___.,|     .'
+ \____   )MMMMMM|   .'
+      `-'       `--' hjm
+      
+```
+
+
+### Intended learning outcomes
+
+By the end of this course, you will:
+
+- Know how to connect remotely to HPC systems using SSH
+- Be familiar with the Slurm workload manager for job submission and monitoring
+- Know how to write job scripts and specify resource requirements
+- Understand fair usage policies and best practices for shared computing resources

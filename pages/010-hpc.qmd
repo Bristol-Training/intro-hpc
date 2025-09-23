@@ -1,0 +1,35 @@
+---
+title: What are HPC Systems?
+---
+
+High Performance Computing (HPC) systems are specialized computing environments designed to solve computationally intensive problems that require significant processing power, memory, or storage resources.
+
+
+![Example of different client connecting to an HPC system for remote computing](../assets/remote-computing.png){width=70%}
+
+
+## Key Characteristics of HPC Systems
+
+**Parallel Processing**: HPC systems typically consist of multiple compute nodes (individual computers) connected via high-speed networks, allowing tasks to be distributed across many processors simultaneously.
+
+**Shared Resources**: Unlike personal computers, HPC systems are shared among multiple users, requiring job scheduling systems to manage resource allocation fairly and efficiently.
+
+**Specialized Hardware**: HPC clusters often include:
+
+- Multiple CPU cores per node
+- Large amounts of RAM (64GB-1TB+ per node)
+- High-speed interconnects
+- Specialized processors (GPUs for certain workloads)
+- High-performance storage systems
+
+**Batch Processing**: Most HPC work is submitted as "jobs" to a queue, rather than running interactively.
+
+## When to Use HPC
+
+Consider using HPC systems when your computational tasks involve:
+
+- Long-running calculations
+- Large memory requirements
+- Parallel processing opportunities
+- Large datasets that don't fit on personal computers
+

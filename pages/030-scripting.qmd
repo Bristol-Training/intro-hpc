@@ -1,0 +1,58 @@
+---
+title: Shell scripts
+jupyter: python3
+---
+
+So far, we have been running things directly on the command line, “interactively”. However, you might want to keep your commands in a file, and be able to run, share, modify, or use files as templates. This is the gateway to coding and is great practice for developing your reproducible work.
+
+A *script* is a file of instructions that can be directly read and run by a program. In our case, we are going to make a script in *shell* language.
+
+Let’s create a very simple script. Open `nano` creating a file called `first_script.sh` and include the lines
+
+```bash
+#!/bin/bash
+
+ls -l *soft
+echo "That is all of the files with \"soft\" in that I could find here."
+```
+
+It is a good practice to always start your scripts with a *shebang* line like `#!/bin/bash`, that tells the system to run the correct shell for the script.
+
+Shell scripts need to have execution permission, so it is important to remember to make your scripts executable with `chmod +x script.sh`. Once done it, we can run our first script with
+
+```bash
+./first_script.sh
+```
+
+
+## Variables and structures
+
+Scripts can also have variables, conditional structures and loops. While a deep dive into these concepts is beyond the scope of an introductory course, it is worth mentioning them to understand all the basic capabilities of shell scripting.
+
+Use descriptive variable names:
+```bash
+user_name="John"
+echo "Hello, ${user_name}!"
+```
+
+Make decisions using if-then-else statements:
+```bash
+if [[ "$1" == "help" ]]; then
+  echo "Usage: script.sh [option]"
+elif [[ "$1" == "version" ]]; then
+  echo "Version 1.0"
+else
+  echo "Unknown option"
+fi
+```
+
+Allow repetition of commands for a specified number of iterations or over a list of items:
+```bash
+for file in *.txt; do
+  echo "Processing ${file}"
+done
+```
+
+
+
+

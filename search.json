@@ -1,0 +1,82 @@
+[
+  {
+    "objectID": "pages/030-scripting.html",
+    "href": "pages/030-scripting.html",
+    "title": "Shell scripts",
+    "section": "",
+    "text": "So far, we have been running things directly on the command line, “interactively”. However, you might want to keep your commands in a file, and be able to run, share, modify, or use files as templates. This is the gateway to coding and is great practice for developing your reproducible work.\nA script is a file of instructions that can be directly read and run by a program. In our case, we are going to make a script in shell language.\nLet’s create a very simple script. Open nano creating a file called first_script.sh and include the lines\n#!/bin/bash\n\nls -l *soft\necho \"That is all of the files with \\\"soft\\\" in that I could find here.\"\nIt is a good practice to always start your scripts with a shebang line like #!/bin/bash, that tells the system to run the correct shell for the script.\nShell scripts need to have execution permission, so it is important to remember to make your scripts executable with chmod +x script.sh. Once done it, we can run our first script with\n./first_script.sh\n\nVariables and structures\nScripts can also have variables, conditional structures and loops. While a deep dive into these concepts is beyond the scope of an introductory course, it is worth mentioning them to understand all the basic capabilities of shell scripting.\nUse descriptive variable names:\nuser_name=\"John\"\necho \"Hello, ${user_name}!\"\nMake decisions using if-then-else statements:\nif [[ \"$1\" == \"help\" ]]; then\n  echo \"Usage: script.sh [option]\"\nelif [[ \"$1\" == \"version\" ]]; then\n  echo \"Version 1.0\"\nelse\n  echo \"Unknown option\"\nfi\nAllow repetition of commands for a specified number of iterations or over a list of items:\nfor file in *.txt; do\n  echo \"Processing ${file}\"\ndone",
+    "crumbs": [
+      "Shell scripts"
+    ]
+  },
+  {
+    "objectID": "pages/980-resources.html",
+    "href": "pages/980-resources.html",
+    "title": "Resources",
+    "section": "",
+    "text": "(needs SSO) University of Bristol ACRC documentation\n\nPython script example\nhello_loop.py\nimport time\n\nfor i in range(1, 31):\n    print(f\"Hello {i}\")\n    time.sleep(2)",
+    "crumbs": [
+      "Resources"
+    ]
+  },
+  {
+    "objectID": "pages/050-best-practices.html",
+    "href": "pages/050-best-practices.html",
+    "title": "Best practices",
+    "section": "",
+    "text": "Best Practices\n\nResource Estimation\n\nStart small: Test with shorter time limits and smaller resource requests\nMonitor usage: Use sacct and seff to check actual resource utilization\nRight-size requests: Don’t over-request resources you won’t use\n\n\n\nJob Organization\n\nUse descriptive job names and organize output files\nInclude error checking in your scripts\nUse arrays for parameter sweeps rather than submitting many individual jobs\nClean up: Remove unnecessary output files periodically\n\n\n\nExample Resource Check\n#!/bin/bash\n#SBATCH --job-name=resource_check\n#SBATCH --time=01:00:00\n#SBATCH --mem=1G\n\n# Print system information\necho \"Job started at: $(date)\"\necho \"Running on node: $(hostname)\"\necho \"Number of CPUs: $SLURM_CPUS_PER_TASK\"\necho \"Memory allocated: $SLURM_MEM_PER_NODE MB\"\n\n# Your actual work here\npython my_script.py\n\necho \"Job finished at: $(date)\"\n\n\n\nGetting Help\n\nSystem Documentation\n\nCheck your HPC system’s documentation website\nLook for system-specific examples and policies\nReview partition/queue descriptions and limits\n\n\n\nUseful Commands for Troubleshooting\n# Check system limits\nscontrol show config\n\n# View partition details\nscontrol show partition PARTITION_NAME\n\n# Check node specifications\nscontrol show nodes\n\n# View your account associations\nsacctmgr show associations user=$USER\n\n\n\nCommon Issues\nJob doesn’t start: Check resource requests against partition limits\nJob fails immediately: Verify paths, modules, and permissions\nOut of memory errors: Increase memory request or optimize code\nTime limit exceeded: Increase time request or optimize algorithms\nRemember: HPC systems vary between institutions, so always consult your local documentation and support staff for system-specific guidance.",
+    "crumbs": [
+      "Best practices"
+    ]
+  },
+  {
+    "objectID": "pages/040-slurm.html",
+    "href": "pages/040-slurm.html",
+    "title": "Job scheduler",
+    "section": "",
+    "text": "Introduction to Slurm\nSlurm (Simple Linux Utility for Resource Management) is a job scheduling system used by many HPC clusters to manage computational resources fairly among users.\n\nKey Slurm Concepts\nJobs: Computational tasks submitted to the scheduler\nNodes: Individual computers in the cluster\nPartitions/Queues: Groups of nodes with similar characteristics\nAllocation: Resources (nodes, CPUs, memory) assigned to your job\n\n\n\nSubmitting Jobs\n# Submit a job script\nsbatch myjob.slurm\n\nBasic Job\n#!/bin/bash\n#SBATCH --account=ABC012345\n#SBATCH --partition=test\n#SBATCH --job-name=my_serial_job\n#SBATCH --output=output_%j.txt\n#SBATCH --error=error_%j.txt\n#SBATCH --time=01:00:00\n#SBATCH --nodes=1\n#SBATCH --ntasks=1\n#SBATCH --cpus-per-task=1\n#SBATCH --mem=4G\n\n\n# Load required modules\nmodule load languages/python/3.7.12\n\n# Change to working directory\ncd $SLURM_SUBMIT_DIR\n\n# Run your program\npython my_analysis.py\n\n\n\n\n\n\nLoading modules\n\n\n\nYou need to load the software you need. You can list the modules available with\nmodule avail\nand load them with load option, e.g.\nmodule load languages/python/3.7.12\n\n\n\n\nImportant Slurm Directives\n\n\n\n\n\n\n\n\nDirective\nPurpose\nExample\n\n\n\n\n--account\nProject name to use\n#SBATCH --account=ABC012345\n\n\n--partition\nQueue/partition to use\n#SBATCH --partition=compute\n\n\n--job-name\nSet job name\n#SBATCH --job-name=analysis\n\n\n--time\nMaximum runtime\n#SBATCH --time=12:00:00\n\n\n--nodes\nNumber of nodes\n#SBATCH --nodes=2\n\n\n--ntasks\nNumber of tasks/processes\n#SBATCH --ntasks=8\n\n\n--cpus-per-task\nCPUs per task\n#SBATCH --cpus-per-task=4\n\n\n--mem\nMemory per node\n#SBATCH --mem=32G\n\n\n--mem-per-cpu\nMemory per CPU\n#SBATCH --mem-per-cpu=4G\n\n\n--gres\nGeneric resources (GPUs)\n#SBATCH --gres=gpu:2\n\n\n\n\n\n\nManaging Jobs\n\nChecking System Status\n# View available partitions/queues\nsinfo\n\n# View node information  \nsinfo -N -l\n\n# Check your job queue\nsqueue -u $USER\n\n# Check all jobs in system\nsqueue\n\n# View detailed job information\nscontrol show job JOBID\n\n\nMonitoring Jobs\n# Check status of specific job\nsqueue -j JOBID\n\n# Check your running jobs\nsqueue -u $USER -t RUNNING\n\n# Check your pending jobs  \nsqueue -u $USER -t PENDING\n\n# Get detailed job information\nscontrol show job JOBID\n\n# View job accounting information\nsacct -j JOBID --format=JobID,JobName,MaxRSS,Elapsed\n\n\nControlling Jobs\n# Cancel a job\nscancel JOBID\n\n# Cancel all your jobs\nscancel -u $USER\n\n# Cancel jobs by name\nscancel --name=my_job_name\n\n# Hold a pending job\nscontrol hold JOBID\n\n# Release a held job\nscontrol release JOBID\n\n\n\nArray Jobs\n#!/bin/bash\n#SBATCH --account=ABC012345\n#SBATCH --partition=test\n#SBATCH --job-name=array_job\n#SBATCH --output=array_%A_%a.out\n#SBATCH --error=array_%A_%a.err\n#SBATCH --array=1-100\n#SBATCH --time=00:30:00\n#SBATCH --nodes=1\n#SBATCH --ntasks=1\n#SBATCH --mem=2G\n\n# Use array task ID to process different input files\ninput_file=\"input_${SLURM_ARRAY_TASK_ID}.txt\"\noutput_file=\"output_${SLURM_ARRAY_TASK_ID}.txt\"\n\n# Load required modules\nmodule load languages/python/3.7.12\n\n# Run analysis on this array element\npython process_data.py $input_file $output_file\n\n\nGPU Jobs\n#!/bin/bash\n#SBATCH --account=ABC012345\n#SBATCH --partition=gpu_short\n#SBATCH --job-name=gpu_job\n#SBATCH --output=gpu_output_%j.txt\n#SBATCH --error=gpu_error_%j.txt\n#SBATCH --time=04:00:00\n#SBATCH --nodes=1\n#SBATCH --ntasks=1\n#SBATCH --gres=gpu:1\n#SBATCH --mem=16G\n\n# Load required modules\nmodule load languages/python/3.7.12\n\n# Load CUDA module\nmodule load cuda/11.8.0-rgxs\n\n# Run GPU program\npython my_gpu_script.py",
+    "crumbs": [
+      "Job scheduler"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Introduction",
+    "section": "",
+    "text": "Welcome to this introduction to High Performance Computing (HPC)! This course covers essential skills for accessing and using computational resources effectively. HPC systems are powerful computing resources that enable researchers to tackle computationally intensive problems that would be impossible or impractical on standard computers. Here we will explore how to connect to HPC systems remotely, use the Slurm (Simple Linux Utility for Resource Management) workload manager to submit and manage jobs, and follow best practices for fair HPC usage.\nMost HPC systems run on Linux operating systems and use command line interfaces, building upon foundational CLI skills.\n          _nnnn_                      \n         dGGGGMMb     ,\"\"\"\"\"\"\"\"\"\"\"\"\"\".\n        @p~qp~~qMb    | Linux Rules! |\n        M|@||@) M|   _;..............'\n        @,----.JM| -'\n       JS^\\__/  qKL\n      dZP        qKRb\n     dZP          qKKb\n    fZP            SMMb\n    HZM            MMMM\n    FqM            MMMM\n  __| \".        |\\dS\"qML\n  |    `.       | `' \\Zq\n _)      \\.___.,|     .'\n \\____   )MMMMMM|   .'\n      `-'       `--' hjm\n      \n\nIntended learning outcomes\nBy the end of this course, you will:\n\nKnow how to connect remotely to HPC systems using SSH\nBe familiar with the Slurm workload manager for job submission and monitoring\nKnow how to write job scripts and specify resource requirements\nUnderstand fair usage policies and best practices for shared computing resources",
+    "crumbs": [
+      "Introduction"
+    ]
+  },
+  {
+    "objectID": "pages/010-hpc.html",
+    "href": "pages/010-hpc.html",
+    "title": "What are HPC Systems?",
+    "section": "",
+    "text": "High Performance Computing (HPC) systems are specialized computing environments designed to solve computationally intensive problems that require significant processing power, memory, or storage resources.\n\n\n\nExample of different client connecting to an HPC system for remote computing\n\n\n\nKey Characteristics of HPC Systems\nParallel Processing: HPC systems typically consist of multiple compute nodes (individual computers) connected via high-speed networks, allowing tasks to be distributed across many processors simultaneously.\nShared Resources: Unlike personal computers, HPC systems are shared among multiple users, requiring job scheduling systems to manage resource allocation fairly and efficiently.\nSpecialized Hardware: HPC clusters often include:\n\nMultiple CPU cores per node\nLarge amounts of RAM (64GB-1TB+ per node)\nHigh-speed interconnects\nSpecialized processors (GPUs for certain workloads)\nHigh-performance storage systems\n\nBatch Processing: Most HPC work is submitted as “jobs” to a queue, rather than running interactively.\n\n\nWhen to Use HPC\nConsider using HPC systems when your computational tasks involve:\n\nLong-running calculations\nLarge memory requirements\nParallel processing opportunities\nLarge datasets that don’t fit on personal computers",
+    "crumbs": [
+      "What are HPC Systems?"
+    ]
+  },
+  {
+    "objectID": "pages/990-contributors.html",
+    "href": "pages/990-contributors.html",
+    "title": "Contributors",
+    "section": "",
+    "text": "The course has been developed by the Jean Golding Institute.\n\nPau Erola",
+    "crumbs": [
+      "Contributors"
+    ]
+  },
+  {
+    "objectID": "pages/020-ssh.html",
+    "href": "pages/020-ssh.html",
+    "title": "Remote working",
+    "section": "",
+    "text": "The original super-power of the command line is that it allows us to connect to other machines. While today we have remote-desktops and screen-shares to see and work with other computer’s GUIs, the command line has been doing this since the 1960s!\nIn research, we often work on remote machines (“computing clusters”, “HPC”, “supercomputers”, or even just “servers”), which we need to log in to. Once we are logged in, the terminal will behave as if we are sitting at that machine, which might be on the other side of the world.\n\nUsing ssh\nSSH is the primary method for connecting to HPC systems. ssh command opens a command line session on a remote computer. The name is short for “secure shell”, because it opens a shell to communicate with a remote machine on the same network, using an encrypted, secure connection.\nssh us01234@hpc-server.bristol.ac.uk\nAfter executing something like the above command, you will then be asked to enter your password - it will not display anything or display stars (*) as you type. If the password is correct, you will then see a new prompt, including the name of the machine you are now logged in to, for example:\n[us01234@hpc-server ~]$\nssh can be used for more than just remote login, it can also execute commands remotely without starting an interactive session.\n\nSSH Key Authentication\nSetting up SSH keys eliminates the need to type passwords repeatedly:\n# Generate SSH key pair on your local machine\nssh-keygen -t rsa -b 4096\n\n# Copy public key to HPC system\nssh-copy-id us01234@hpc-server.bristol.ac.uk\n\n\nSSH Configuration File\nCreate ~/.ssh/config on your local machine to simplify connections:\n# To connect simply with 'ssh hpc-server'\nHost hpc-server\n    HostName hpc-server.bristol.ac.uk\n    User us01234\n    Port 22\n    IdentityFile ~/.ssh/id_rsa\n\n\n\nCopying files to and from remote machines using scp\nSCP uses SSH to transfer files securely between systems. scp (“secure copy”) is just like cp, except it can copy files and folders to and from another computer. scp is built on top of SSH and provides a secure way to transfer files, ensuring data confidentiality during transit.\nJust like with cp, you can copy the contents of folders with the flag -r.\n# Copy local file to remote host\nscp local_file.txt us01234@hpc-server.bristol.ac.uk:/remote/path/\n\n# Copy remote file to local system\nscp us01234@hpc-server.bristol.ac.uk:/remote/file.txt /local/path/\n\n# Copy entire directory recursively\nscp -r /local/directory us01234@hpc-server.bristol.ac.uk:/remote/path/\n\n\nFileZilla for Graphical File Transfer\nFileZilla provides a user-friendly graphical interface for file transfers. It is available at the Company Portal.\n\n\n\nFileZilla interface\n\n\n\nSetting up FileZilla Connection\n\nOpen FileZilla and go to File → Site Manager\nCreate New Site with these settings:\n\nProtocol: SFTP - SSH File Transfer Protocol\nHost: Your HPC system hostname, e.g. hpc-server.bristol.ac.uk\nPort: 22 (or your system’s SSH port)\nLogon Type:\n\n“Normal” for password authentication\n“Key file” for SSH key authentication\n\nUser: Your username, e.g. us01234\n\n\n\n\nUsing FileZilla\n\nLeft panel: Your local computer files\nRight panel: Remote HPC system files\n\nTransfer files: Drag and drop between panels\nQueue: Monitor transfer progress in bottom panel",
+    "crumbs": [
+      "Remote working"
+    ]
+  }
+]

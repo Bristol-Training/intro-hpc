@@ -5,7 +5,18 @@ title: Resources
 (needs SSO)
 [University of Bristol ACRC documentation](https://www.acrc.bris.ac.uk/protected/hpc-docs/training/intro-to-hpc-slurm/intro2hpc.html)
 
+[Research Data Storage Facility (RDSF)](https://www.bristol.ac.uk/acrc/research-data-storage-facility/)
 
+[Introduction to the Command Line Interface](https://bristol-training.github.io/intro-cli/)
+[![](../assets/youtube.png){width="28px"}](https://www.youtube.com/watch?v=-zhEp_w_M6A&list=PLx325CxArn15VHMrE2E70MmW436ebZI9I)
+
+
+[Estimating HPC Resources](https://bristol-training.github.io/estimating-hpc-resources)
+[![](../assets/youtube.png){width="28px"}](https://www.youtube.com/watch?v=X6FqHHb-7K4&list=PLx325CxArn15VHMrE2E70MmW436ebZI9I)
+
+<br>
+
+---
 
 
 #### Python script example

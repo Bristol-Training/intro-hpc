@@ -50,6 +50,8 @@ scp us01234@hpc-server.bristol.ac.uk:/remote/file.txt /local/path/
 scp -r /local/directory us01234@hpc-server.bristol.ac.uk:/remote/path/
 ```
 
+If you don't have `scp` in your Windows machine, you can download it from [PuTTY's website](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html).
+
 
 ## FileZilla for Graphical File Transfer
 

@@ -25,31 +25,12 @@ After executing something like the above command, you will then be asked to ente
 `ssh` can be used for more than just remote login, it can also execute commands remotely without starting an interactive session.
 
 
-#### SSH Key Authentication
 
-Setting up SSH keys eliminates the need to type passwords repeatedly:
+### Using PuTTY
 
-```bash
-# Generate SSH key pair on your local machine
-ssh-keygen -t rsa -b 4096
+PuTTY is a popular, open source SSH client for Windows. It can be downloaded [here](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html).
 
-# Copy public key to HPC system
-ssh-copy-id us01234@hpc-server.bristol.ac.uk
-```
-
-#### SSH Configuration File
-
-Create `~/.ssh/config` on your local machine to simplify connections:
-
-```bash
-# To connect simply with 'ssh hpc-server'
-Host hpc-server
-    HostName hpc-server.bristol.ac.uk
-    User us01234
-    Port 22
-    IdentityFile ~/.ssh/id_rsa
-
-```
+![PuTTY configuration interface.](../assets/PuTTY.png)
 
 
 ## Copying files to and from remote machines using scp
@@ -74,9 +55,8 @@ scp -r /local/directory us01234@hpc-server.bristol.ac.uk:/remote/path/
 
 FileZilla provides a user-friendly graphical interface for file transfers. It is available at the Company Portal.
 
-![FileZilla interface](../assets/filezilla.png)
 
-### Setting up FileZilla Connection
+#### Setting up FileZilla Connection
 
 1. **Open FileZilla** and go to File → Site Manager
 2. **Create New Site** with these settings:
@@ -88,11 +68,82 @@ FileZilla provides a user-friendly graphical interface for file transfers. It is
      - "Key file" for SSH key authentication
    - **User**: Your username, e.g. *us01234*
 
-### Using FileZilla
+![FileZilla interface.](../assets/filezilla.png)
+
+
+#### Using FileZilla
 
 - **Left panel**: Your local computer files
 - **Right panel**: Remote HPC system files  
 - **Transfer files**: Drag and drop between panels
 - **Queue**: Monitor transfer progress in bottom panel
 
+![FileZilla interface with a connection established.](../assets/filezilla2.png)
 
+
+## SSH Key Authentication
+
+Setting up SSH keys eliminates the need to type passwords repeatedly.
+
+To generate a key you can type on your Terminal (Mac) or PowerShell (Windows):
+```bash
+# Generate SSH key pair on your local machine
+ssh-keygen -t rsa -b 4096
+```
+
+Then you need to copy the key to the server using:
+
+```bash
+# Copy public key to HPC system
+ssh-copy-id us01234@hpc-server.bristol.ac.uk
+```
+
+Or if you don't have `ssh-copy-id` in your system, you can do it manually:
+
+
+1. Copy your key to the *clipboard*.
+
+::: {.panel-tabset}
+
+### Windows (powershell)
+```bash
+type $env:USERPROFILE\.ssh\id_rsa.pub
+``
+```
+
+### Mac & Linux
+```bash
+cat ~/.ssh/id_rsa.pub
+```
+
+
+
+:::
+
+
+2. Connect to the server
+```bash
+ssh us01234@hpc-server.bristol.ac.uk
+```
+
+3. On the server, run the following instructions replacing `YOUR_PUBLIC_KEY` with the key you have copied in your clipboard.
+```bash
+echo "YOUR_PUBLIC_KEY" >> ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys
+``
+```
+
+
+##### SSH Configuration File
+
+Create `~/.ssh/config` on your local machine to simplify connections:
+
+```bash
+# To connect simply with 'ssh hpc-server'
+Host hpc-server
+    HostName hpc-server.bristol.ac.uk
+    User us01234
+    Port 22
+    IdentityFile ~/.ssh/id_rsa
+
+```

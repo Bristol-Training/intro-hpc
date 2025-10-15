@@ -7,7 +7,6 @@ Welcome to this introduction to High Performance Computing (HPC)! This course co
 
 Most HPC systems run on *Linux* operating systems and use command line interfaces, building upon [foundational CLI skills](https://bristol-training.github.io/intro-cli/).
 
-
 ```
           _nnnn_                      
          dGGGGMMb     ,"""""""""""""".

@@ -8,8 +8,6 @@ title: Resources
 
 
 
-
-
 #### Python script example
 
 **hello_loop.py**

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Introduction – Introduction to HPC</title>
+<title>Pau Erola, PhD – Introduction to HPC</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,7 +30,6 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./pages/010-hpc.html" rel="next">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -69,112 +68,142 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
+<link rel="stylesheet" href="styles.css">
 </head>
 
-<body class="nav-sidebar docked">
+<body>
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav">
-    <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-        <i class="bi bi-layout-text-sidebar-reverse"></i>
-      </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Introduction</a></li></ol></nav>
-        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-        </a>
-      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
-        <i class="bi bi-search"></i>
-      </button>
-    </div>
-  </nav>
-</header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
-    <div class="pt-lg-2 mt-2 text-center sidebar-header sidebar-header-stacked">
-      <a href="./index.html" class="sidebar-logo-link">
-      <img src="./assets/UoB_RGB_24.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
-      </a>
-    <div class="sidebar-title mb-0 py-0">
-      <a href="./">Introduction to HPC</a> 
-    </div>
-      </div>
-        <div class="mt-2 flex-shrink-0 align-items-center">
-        <div class="sidebar-search">
-        <div id="quarto-search" class="" title="Search"></div>
-        </div>
-        </div>
-    <div class="sidebar-menu-container"> 
-    <ul class="list-unstyled mt-1">
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Introduction</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./pages/010-hpc.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">What are HPC Systems?</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./pages/020-ssh.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Remote working</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./pages/030-scripting.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Shell scripts</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./pages/040-slurm.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Job scheduler</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./pages/050-best-practices.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Best practices</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./pages/980-resources.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Resources</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./pages/990-contributors.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Contributors</span></a>
-  </div>
-</li>
-    </ul>
-    </div>
-</nav>
-<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><div class="quarto-margin-header"><div class="margin-header-item">
+<style>
+  :root {
+    --bs-blue: #4a6fa5;
+    --bs-indigo: #6f42c1;
+    --bs-purple: #6f42c1;
+    --bs-pink: #e91e63;
+    --bs-red: #d32f2f;
+    --bs-orange: #fd7e14;
+    --bs-yellow: #ffc107;
+    --bs-green: #198754;
+    --bs-teal: #20c997;
+    --bs-cyan: #0dcaf0;
+    --bs-white: #fff;
+    --bs-gray-100: #f8f9fa;
+    --bs-gray-200: #e9ecef;
+    --bs-gray-300: #dee2e6;
+    --bs-gray-400: #ced4da;
+    --bs-gray-500: #adb5bd;
+    --bs-gray-600: #6c757d;
+    --bs-gray-700: #495057;
+    --bs-gray-800: #343a40;
+    --bs-gray-900: #212529;
+    --bs-primary: #4a6fa5;
+    --bs-secondary: #6c757d;
+    --bs-success: #198754;
+    --bs-info: #0dcaf0;
+    --bs-warning: #ffc107;
+    --bs-danger: #dc3545;
+    --bs-light: #f8f9fa;
+    --bs-dark: #212529;
+  }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #343a40;
+  }
+
+  .hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 4rem 0;
+    text-align: center;
+  }
+
+  .hero-section h1 {
+    font-size: 3rem;
+    font-weight: 300;
+    margin-bottom: 0.5rem;
+  }
+
+  .hero-section .lead {
+    font-size: 1.25rem;
+    font-weight: 300;
+    opacity: 0.9;
+  }
+
+  .section-header {
+    border-bottom: 3px solid #4a6fa5;
+    padding-bottom: 0.5rem;
+    margin-bottom: 2rem;
+    color: #495057;
+  }
+
+  .work-card {
+    border: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 1.5rem;
+  }
+
+  .work-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  }
+
+  .work-card .card-header {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #4a6fa5;
+    font-weight: 600;
+  }
+
+  .contact-section {
+    background-color: #f8f9fa;
+    padding: 3rem 0;
+    margin-top: 3rem;
+  }
+
+  .btn-custom {
+    background-color: #4a6fa5;
+    border-color: #4a6fa5;
+    color: white;
+    transition: all 0.3s ease;
+  }
+
+  .btn-custom:hover {
+    background-color: #3d5a91;
+    border-color: #3d5a91;
+    color: white;
+  }
+
+  .institution-link {
+    color: #4a6fa5;
+    text-decoration: none;
+  }
+
+  .institution-link:hover {
+    color: #3d5a91;
+    text-decoration: underline;
+  }
+</style>
+</div></div>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content column-page-left" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Introduction</h1>
+<h1 class="title">Pau Erola, PhD</h1>
+<p class="subtitle lead">Research Software Engineer at the Jean Golding Institute, University of Bristol</p>
 </div>
 
 
 
-<div class="quarto-title-meta">
+<div class="quarto-title-meta column-page-left">
 
     
   
@@ -186,37 +215,72 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Welcome to this introduction to High Performance Computing (HPC)! This course covers essential skills for accessing and using computational resources effectively. HPC systems are powerful computing resources that enable researchers to tackle computationally intensive problems that would be impossible or impractical on standard computers. Here we will explore how to connect to HPC systems remotely, use the <em>Slurm</em> (<em>Simple Linux Utility for Resource Management</em>) workload manager to submit and manage jobs, and follow best practices for fair HPC usage.</p>
-<p>Most HPC systems run on <em>Linux</em> operating systems and use command line interfaces, building upon <a href="https://bristol-training.github.io/intro-cli/">foundational CLI skills</a>.</p>
-<pre><code>          _nnnn_                      
-         dGGGGMMb     ,"""""""""""""".
-        @p~qp~~qMb    | Linux Rules! |
-        M|@||@) M|   _;..............'
-        @,----.JM| -'
-       JS^\__/  qKL
-      dZP        qKRb
-     dZP          qKKb
-    fZP            SMMb
-    HZM            MMMM
-    FqM            MMMM
-  __| ".        |\dS"qML
-  |    `.       | `' \Zq
- _)      \.___.,|     .'
- \____   )MMMMMM|   .'
-      `-'       `--' hjm
-      </code></pre>
-<section id="intended-learning-outcomes" class="level4">
-<h4 class="anchored" data-anchor-id="intended-learning-outcomes">Intended learning outcomes</h4>
-<p>By the end of this course, you will:</p>
-<ul>
-<li>Know how to connect remotely to HPC systems using SSH</li>
-<li>Be familiar with the Slurm workload manager for job submission and monitoring</li>
-<li>Know how to write job scripts and specify resource requirements</li>
-<li>Understand fair usage policies and best practices for shared computing resources</li>
-</ul>
-
-
+<div class="container">
+<div class="row">
+<div class="col-lg-8">
+<section id="about" class="level3 section-header">
+<h3 class="section-header anchored" data-anchor-id="about">About</h3>
+<p>I am a researcher specializing in cancer epidemiology, bioinformatics, and data science. I received my Ph.D.&nbsp;in Computer Engineering from <a href="http://www.urv.cat">Universitat Rovira i Virgili</a> and M.Sc. in Biomedicine from <a href="http://www.ub.edu">Universitat de Barcelona</a>, both in 2016.</p>
+<p>Currently, I work as a Research Fellow at the <a href="https://www.bristol.ac.uk/golding/">Jean Golding Institute</a>, University of Bristol, and hold an adjunct professorship at <a href="https://www.uoc.edu/">Universitat Oberta de Catalunya</a>. My research focuses on developing innovative approaches to cancer research through computational methods and data-driven insights.</p>
 </section>
+<section id="recent-work" class="level3 section-header">
+<h3 class="section-header anchored" data-anchor-id="recent-work">Recent Work</h3>
+<div class="work-card card">
+<div class="card-header">
+<p><strong>Harnessing AI: Responsible Use in Academic and Professional Settings</strong></p>
+</div>
+<div class="card-body">
+<p>A comprehensive training course on the responsible use of Artificial Intelligence at the University of Bristol. This course covers LLM capabilities, ethical considerations, and practical applications while maintaining academic integrity.</p>
+<p><a href="https://bristol-training.github.io/harnessing-ai/" class="btn btn-custom btn-sm">View Course Materials →</a></p>
+</div>
+</div>
+<div class="work-card card">
+<div class="card-header">
+<p><strong>Publications &amp; Research</strong></p>
+</div>
+<div class="card-body">
+<p>For a complete list of my academic publications and research contributions, please visit my Google Scholar profile where you can find the most up-to-date collection of my work in cancer epidemiology and bioinformatics.</p>
+<p><a href="https://scholar.google.com/citations?hl=en&amp;user=Q8tjPdMAAAAJ&amp;view_op=list_works&amp;sortby=pubdate" class="btn btn-custom btn-sm">View Publications →</a></p>
+</div>
+</div>
+</section>
+</div>
+<div class="col-lg-4">
+<div class="card">
+<div class="card-header">
+<p><strong>Quick Links</strong></p>
+</div>
+<div class="card-body">
+<ul>
+<li><a href="https://scholar.google.com/citations?hl=en&amp;user=Q8tjPdMAAAAJ&amp;view_op=list_works&amp;sortby=pubdate">Google Scholar</a></li>
+<li><a href="https://www.bristol.ac.uk/golding/">Jean Golding Institute</a></li>
+<li><a href="https://www.bristol.ac.uk/">University of Bristol</a></li>
+<li><a href="https://www.uoc.edu/">Universitat Oberta de Catalunya</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="contact-section">
+<div class="container">
+<div class="row">
+<section id="contact" class="level3 section-header col-md-8 mx-auto text-center">
+<h3 class="section-header anchored" data-anchor-id="contact">Contact</h3>
+<p><strong>Jean Golding Institute</strong><br>
+University of Bristol<br>
+Royal Fort House<br>
+Bristol, BS8 1UH<br>
+United Kingdom</p>
+<p><strong>Email:</strong> pau.erola <em>AT</em> bristol.ac.uk</p>
+</section>
+</div>
+</div>
+</div>
+<hr>
+<p><em>Last updated: September 2025</em></p>
+
+
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -311,7 +375,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp("https:\/\/Bristol-Training\.github\.io\/intro-hpc\/");
+      var filterRegex = new RegExp('/' + window.location.host + '/');
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
@@ -639,15 +703,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
-<nav class="page-navigation">
-  <div class="nav-page nav-page-previous">
-  </div>
-  <div class="nav-page nav-page-next">
-      <a href="./pages/010-hpc.html" class="pagination-link" aria-label="What are HPC Systems?">
-        <span class="nav-page-text">What are HPC Systems?</span> <i class="bi bi-arrow-right-short"></i>
-      </a>
-  </div>
-</nav>
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
@@ -656,7 +711,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions"><ul><li><a href="https://github.com/bristol-training/intro-hpc/edit/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/bristol-training/intro-hpc/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="toc-actions"><ul><li><a href="https://github.com/bristol-training/intro-hpc/edit/main/test.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/bristol-training/intro-hpc/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>

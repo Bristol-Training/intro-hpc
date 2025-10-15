@@ -204,6 +204,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#using-ssh" id="toc-using-ssh" class="nav-link active" data-scroll-target="#using-ssh">Using <code>ssh</code></a></li>
   <li><a href="#copying-files-to-and-from-remote-machines-using-scp" id="toc-copying-files-to-and-from-remote-machines-using-scp" class="nav-link" data-scroll-target="#copying-files-to-and-from-remote-machines-using-scp">Copying files to and from remote machines using scp</a></li>
   <li><a href="#filezilla-for-graphical-file-transfer" id="toc-filezilla-for-graphical-file-transfer" class="nav-link" data-scroll-target="#filezilla-for-graphical-file-transfer">FileZilla for Graphical File Transfer</a></li>
+  <li><a href="#ssh-key-authentication" id="toc-ssh-key-authentication" class="nav-link" data-scroll-target="#ssh-key-authentication">SSH Key Authentication</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/bristol-training/intro-hpc/edit/main/pages/020-ssh.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/bristol-training/intro-hpc/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -238,50 +239,36 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>After executing something like the above command, you will then be asked to enter your password - it will not display anything or display stars (*) as you type. If the password is correct, you will then see a new prompt, including the name of the machine you are now logged in to, for example:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[us01234@hpc-server</span> ~]$</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><code>ssh</code> can be used for more than just remote login, it can also execute commands remotely without starting an interactive session.</p>
-<section id="ssh-key-authentication" class="level5">
-<h5 class="anchored" data-anchor-id="ssh-key-authentication">SSH Key Authentication</h5>
-<p>Setting up SSH keys eliminates the need to type passwords repeatedly:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate SSH key pair on your local machine</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh-keygen</span> <span class="at">-t</span> rsa <span class="at">-b</span> 4096</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Copy public key to HPC system</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="ex">ssh-copy-id</span> us01234@hpc-server.bristol.ac.uk</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</section>
-<section id="ssh-configuration-file" class="level5">
-<h5 class="anchored" data-anchor-id="ssh-configuration-file">SSH Configuration File</h5>
-<p>Create <code>~/.ssh/config</code> on your local machine to simplify connections:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># To connect simply with 'ssh hpc-server'</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Host</span> hpc-server</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="ex">HostName</span> hpc-server.bristol.ac.uk</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="ex">User</span> us01234</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="ex">Port</span> 22</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="ex">IdentityFile</span> ~/.ssh/id_rsa</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="using-putty" class="level4">
+<h4 class="anchored" data-anchor-id="using-putty">Using PuTTY</h4>
+<p>PuTTY is a popular, open source SSH client for Windows. It can be downloaded <a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html">here</a>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../assets/PuTTY.png" class="img-fluid figure-img"></p>
+<figcaption>PuTTY configuration interface.</figcaption>
+</figure>
+</div>
 </section>
 </section>
 <section id="copying-files-to-and-from-remote-machines-using-scp" class="level3">
 <h3 class="anchored" data-anchor-id="copying-files-to-and-from-remote-machines-using-scp">Copying files to and from remote machines using scp</h3>
 <p>SCP uses SSH to transfer files securely between systems. <code>scp</code> (“secure copy”) is just like <code>cp</code>, except it can copy files and folders to and from another computer. <code>scp</code> is built on top of SSH and provides a secure way to transfer files, ensuring data confidentiality during transit.</p>
 <p>Just like with cp, you can copy the contents of folders with the flag <code>-r</code>.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Copy local file to remote host</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> local_file.txt us01234@hpc-server.bristol.ac.uk:/remote/path/</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Copy remote file to local system</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> us01234@hpc-server.bristol.ac.uk:/remote/file.txt /local/path/</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Copy entire directory recursively</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> <span class="at">-r</span> /local/directory us01234@hpc-server.bristol.ac.uk:/remote/path/</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Copy local file to remote host</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> local_file.txt us01234@hpc-server.bristol.ac.uk:/remote/path/</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Copy remote file to local system</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> us01234@hpc-server.bristol.ac.uk:/remote/file.txt /local/path/</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Copy entire directory recursively</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> <span class="at">-r</span> /local/directory us01234@hpc-server.bristol.ac.uk:/remote/path/</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>If you don’t have <code>scp</code> in your Windows machine, you can download it from <a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html">PuTTY’s website</a>.</p>
 </section>
 <section id="filezilla-for-graphical-file-transfer" class="level3">
 <h3 class="anchored" data-anchor-id="filezilla-for-graphical-file-transfer">FileZilla for Graphical File Transfer</h3>
 <p>FileZilla provides a user-friendly graphical interface for file transfers. It is available at the Company Portal.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="../assets/filezilla.png" class="img-fluid figure-img"></p>
-<figcaption>FileZilla interface</figcaption>
-</figure>
-</div>
-<section id="setting-up-filezilla-connection" class="level4">
-<h4 class="anchored" data-anchor-id="setting-up-filezilla-connection">Setting up FileZilla Connection</h4>
+<section id="setting-up-filezilla-connection" class="level5">
+<h5 class="anchored" data-anchor-id="setting-up-filezilla-connection">Setting up FileZilla Connection</h5>
 <ol type="1">
 <li><strong>Open FileZilla</strong> and go to File → Site Manager</li>
 <li><strong>Create New Site</strong> with these settings:
@@ -297,9 +284,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>User</strong>: Your username, e.g.&nbsp;<em>us01234</em></li>
 </ul></li>
 </ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../assets/filezilla.png" class="img-fluid figure-img"></p>
+<figcaption>FileZilla interface.</figcaption>
+</figure>
+</div>
 </section>
-<section id="using-filezilla" class="level4">
-<h4 class="anchored" data-anchor-id="using-filezilla">Using FileZilla</h4>
+<section id="using-filezilla" class="level5">
+<h5 class="anchored" data-anchor-id="using-filezilla">Using FileZilla</h5>
 <ul>
 <li><strong>Left panel</strong>: Your local computer files</li>
 <li><strong>Right panel</strong>: Remote HPC system files<br>
@@ -307,6 +300,58 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Transfer files</strong>: Drag and drop between panels</li>
 <li><strong>Queue</strong>: Monitor transfer progress in bottom panel</li>
 </ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../assets/filezilla2.png" class="img-fluid figure-img"></p>
+<figcaption>FileZilla interface with a connection established.</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="ssh-key-authentication" class="level3">
+<h3 class="anchored" data-anchor-id="ssh-key-authentication">SSH Key Authentication</h3>
+<p>Setting up SSH keys eliminates the need to type passwords repeatedly.</p>
+<p>To generate a key you can type on your Terminal (Mac) or PowerShell (Windows):</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate SSH key pair on your local machine</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh-keygen</span> <span class="at">-t</span> rsa <span class="at">-b</span> 4096</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Then you need to copy the key to the server using:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Copy public key to HPC system</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">ssh-copy-id</span> us01234@hpc-server.bristol.ac.uk</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Or if you don’t have <code>ssh-copy-id</code> in your system, you can do it manually:</p>
+<ol type="1">
+<li>Copy your key to the <em>clipboard</em>.</li>
+</ol>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Windows (powershell)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Mac &amp; Linux</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="bu">type</span> <span class="va">$env</span>:USERPROFILE<span class="dt">\.</span>ssh<span class="dt">\i</span>d_rsa.pub</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">``</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> ~/.ssh/id_rsa.pub</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+<ol start="2" type="1">
+<li>Connect to the server</li>
+</ol>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span> us01234@hpc-server.bristol.ac.uk</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ol start="3" type="1">
+<li>On the server, run the following instructions replacing <code>YOUR_PUBLIC_KEY</code> with the key you have copied in your clipboard.</li>
+</ol>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"YOUR_PUBLIC_KEY"</span> <span class="op">&gt;&gt;</span> ~/.ssh/authorized_keys</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> 600 ~/.ssh/authorized_keys</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="kw">``</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="ssh-configuration-file" class="level6">
+<h6 class="anchored" data-anchor-id="ssh-configuration-file">SSH Configuration File</h6>
+<p>Create <code>~/.ssh/config</code> on your local machine to simplify connections:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># To connect simply with 'ssh hpc-server'</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Host</span> hpc-server</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="ex">HostName</span> hpc-server.bristol.ac.uk</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="ex">User</span> us01234</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="ex">Port</span> 22</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="ex">IdentityFile</span> ~/.ssh/id_rsa</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
 </section>
@@ -405,7 +450,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
+      var filterRegex = new RegExp("https:\/\/Bristol-Training\.github\.io\/intro-hpc\/");
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }

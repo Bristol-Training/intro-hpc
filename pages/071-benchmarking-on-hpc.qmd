@@ -1,0 +1,107 @@
+---
+title: "Benchmarking on HPC systems"
+---
+
+Timings from your laptop are a useful first hint, but they can be very different from what you will get on the cluster: different processors, different file systems and different software. The benchmarks that you will use to estimate your request should be run on the system (and the type of node) you will use for the real work.
+
+::: {.callout-important}
+### Never benchmark on the login nodes
+
+Login nodes are shared by everybody and are only meant for editing files, submitting jobs and light tasks. Always run your benchmarks on **compute nodes**, either through an interactive session or by submitting a batch job. As well as being unfair to other users, timings taken on a busy login node are not reliable.
+:::
+
+## Interactive benchmarking
+
+An interactive session gives you a shell on a compute node, which is handy for quick tests and for trying out different options:
+
+```bash
+# Request an interactive session (30 minutes, 4 cores, 8 GB of memory)
+salloc --partition=test --nodes=1 --cpus-per-task=4 --mem=8G --time=00:30:00
+
+# Once the resources are allocated, run your benchmark
+srun --cpu-bind=cores /usr/bin/time -v python my_program.py --input test_data.csv
+```
+
+Use `sinfo` to check which partitions are available in your system (see the [job scheduler](040-slurm.qmd) page).
+
+## Batch job benchmarking
+
+For systematic benchmarks (several data sizes, several repetitions, several core counts) it is better to write a job script, so that the tests are reproducible and you keep a record of exactly what you asked for:
+
+```bash
+#!/bin/bash
+#SBATCH --account=ABC012345
+#SBATCH --partition=test
+#SBATCH --job-name=benchmark
+#SBATCH --output=benchmark_out_%j.txt
+#SBATCH --error=benchmark_err_%j.txt
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=16G
+#SBATCH --time=00:30:00
+
+module load languages/python/3.7.12
+
+export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK   # match the requested CPUs
+
+echo "Starting benchmark at $(date)"
+echo "Running on node: $(hostname)"
+
+srun --cpu-bind=cores /usr/bin/time -v \
+    python my_program.py --input test_10pct.csv --threads $SLURM_CPUS_PER_TASK
+```
+
+::: {.callout-note}
+Notice that `/usr/bin/time` comes *after* `srun`, so that it measures your program rather than the `srun` launcher. The report written by `time -v` ends up in the job's error file (`benchmark_err_JOBID.txt`).
+:::
+
+## Analysing completed jobs
+
+The scheduler keeps its own record of the resources that each job used, which you can query with `sacct`:
+
+```bash
+# Get the job statistics
+sacct -j JOBID --format=JobID,Elapsed,TotalCPU,MaxRSS,ReqCPUS,State -P
+```
+
+An example of the output (illustrative):
+
+```
+JobID|Elapsed|TotalCPU|MaxRSS|ReqCPUS|State
+12345|00:15:30|01:58:45||8|COMPLETED
+12345.0|00:15:30|01:58:45|2048000K|8|COMPLETED
+```
+
+::: {.callout-tip}
+The peak memory (`MaxRSS`) is reported on the job *steps* (the lines like `12345.0` or `12345.batch`) rather than in the first line of the job. If it is installed in your system, the `seff JOBID` command gives you a quick summary of the CPU and memory efficiency of a finished job.
+:::
+
+### Resource analysis
+
+From the output above:
+
+| Quantity | Value | How |
+|----------|-------|-----|
+| Wall time | 15.5 minutes | `Elapsed` |
+| CPU time | 118.75 minutes | `TotalCPU` = 1 h 58 min 45 s |
+| Peak memory | about 2 GB | `MaxRSS` |
+| Core-hours | 2.07 core-hours | 15.5 min ÷ 60 × 8 cores |
+| CPU efficiency | about 96% | CPU time ÷ (wall time × cores) = 118.75 ÷ (15.5 × 8) |
+
+An efficiency close to 100% means that the 8 cores we asked for were busy all the time. If it had been, say, 25%, we would be reserving four times more cores than the program makes use of.
+
+## Estimating GPU time requirements
+
+The same benchmarking principles used for CPU-based tasks apply to GPU workloads, but there are some additional things to consider:
+
+- GPUs often have **longer warm-up times** (loading libraries, moving data and the model to the GPU, compiling kernels), so very short tests can be misleading
+- The **batch size**, the **data transfer overhead** between CPU and GPU memory and the **GPU memory usage** can significantly affect the runtime
+- Benchmarks should be run with **sufficiently large datasets** to reflect realistic performance
+
+::: {.callout-note}
+### Check how your system accounts for GPU time
+
+The resource units are not the same in every system. For example, on Isambard-AI, using 1 GPU for 1 hour is counted as 0.25 hours of resource use. Always check the documentation of the facility you are using before converting your estimates into a request.
+:::
+
+[Converting benchmarks to resource requests](090-resource-requests.qmd)

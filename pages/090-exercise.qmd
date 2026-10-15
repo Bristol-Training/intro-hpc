@@ -1,0 +1,257 @@
+---
+title: "Exercise: estimating resources"
+---
+
+In this exercise you will benchmark a small Python program, find out how its run time and memory use grow with the size of the data, and use your measurements to estimate the resources needed for a larger project, following the steps of the previous pages.
+
+**Time needed:** about 30 minutes, most of it waiting for the benchmarks to run.
+
+## The problem
+
+The program `neighbour_counts.py` reads a cloud of points in 3D space and counts, for every point, how many other points lie within a given distance of it. It is the kind of calculation you find in spatial statistics, clustering and particle simulations. It uses only the Python standard library.
+
+The dataset, `points.csv`, is **small**: 30,000 points in a file of less than 1 MB. But the program compares every point with every other point, so the cost does not come from the size of the file. A single run on the whole dataset takes **a couple of minutes**.
+
+You will need these files:
+
+- [`points.csv`](../data/points.csv): the dataset (columns `id,x,y,z`)
+- [`neighbour_counts.py`](../data/neighbour_counts.py): the program
+- [`make_points.py`](../data/make_points.py): generates a dataset of any size (only needed if you want to experiment)
+
+Download them to your working directory on the HPC system, for example with
+
+```bash
+wget https://bristol-training.github.io/intro-hpc/data/points.csv
+wget https://bristol-training.github.io/intro-hpc/data/neighbour_counts.py
+```
+
+::: {.callout-important}
+Remember: **do not run the benchmarks on the login node**. Either request an interactive session on a compute node,
+
+```bash
+salloc --partition=test --nodes=1 --cpus-per-task=4 --mem=4G --time=00:30:00
+```
+
+or submit the commands as a batch job, as shown in [Task 2](#task-2-how-does-it-scale).
+:::
+
+## Task 1: a first measurement
+
+Load a Python module and run the program once on the full dataset, measuring it with GNU time:
+
+```bash
+module load languages/python/3.7.12
+
+/usr/bin/time -v python neighbour_counts.py points.csv
+```
+
+The program prints a short summary of the results and, at the end, its own timing report. The `time -v` report appears below that.
+
+Write down, from the `time -v` output:
+
+| Quantity | Your value |
+|----------|-----------|
+| Elapsed (wall clock) time | |
+| User time + system time (CPU time) | |
+| Maximum resident set size (peak memory) | |
+
+::: {.callout-note}
+### Questions
+
+1. Is the program using more than one core? (Compare the CPU time with the wall-clock time.)
+2. How many core-hours did this run use?
+3. If you wanted to run it as a job, how much memory would you ask for?
+:::
+
+::: {.callout-tip collapse="true"}
+### Solution
+
+The numbers depend on the processor of the node, but you should see something like this:
+
+- Wall-clock time of about 2 minutes (136 s in our test), and user time almost identical to it: the CPU time is about the same as the wall time, so the program is using **one core**
+- Core-hours: 136 s × 1 core ÷ 3600 = about **0.04 core-hours**
+- Peak memory of less than 20 MB (`Maximum resident set size` is reported in kilobytes). This is mostly Python itself and the list of points; the program needs very little memory, so a request of 1 GB is already generous
+
+If your run is much shorter than one minute, your processor is faster than ours: create a larger dataset with `python make_points.py --n 45000` and use that file for the rest of the exercise.
+:::
+
+## Task 2: how does it scale?
+
+To find out how the cost grows with the size of the data, we need smaller tests. We create three subsets with the first 25%, 50% and 75% of the points (the first line of the file is the header, hence the `+ 1`):
+
+```bash
+head -n 7501  points.csv > points_25.csv    # 7,500 points
+head -n 15001 points.csv > points_50.csv    # 15,000 points
+head -n 22501 points.csv > points_75.csv    # 22,500 points
+cp points.csv points_100.csv                # 30,000 points
+```
+
+The points in the file are in random order, so each subset is a representative sample of the whole.
+
+Now run the program on each of them and keep the measurements in a log file. You can use this script, saved as `benchmark.sh`:
+
+```bash
+#!/bin/bash
+module load languages/python/3.7.12
+
+for size in 25 50 75 100; do
+    echo "Testing ${size}% of the data..."
+    /usr/bin/time -o timing_results.log -a \
+        -f "size=${size}pct wall=%e user=%U sys=%S maxRSS_KB=%M" \
+        python neighbour_counts.py points_${size}.csv > output_${size}.txt
+done
+```
+
+::: {.panel-tabset}
+### Interactive session
+
+Inside your interactive session:
+
+```bash
+bash benchmark.sh
+```
+
+### Batch job
+
+Add the Slurm directives (using the account and partition you have for this course) at the top of the script,
+
+```bash
+#!/bin/bash
+#SBATCH --account=ABC012345
+#SBATCH --partition=test
+#SBATCH --job-name=benchmark
+#SBATCH --output=benchmark_out_%j.txt
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=2G
+#SBATCH --time=00:15:00
+```
+
+and submit it with `sbatch benchmark.sh`. You can follow it with `squeue -u $USER`, and when it finishes, look at the statistics with `sacct`.
+:::
+
+The four runs take about four minutes in total. While you wait, think about what you expect: *if the time for 25% of the data is T, how long should the 50% run take if the scaling is linear? And if it is quadratic?*
+
+When the runs have finished, look at the log:
+
+```bash
+cat timing_results.log
+```
+
+and fill in this table:
+
+| Data used | Points | Wall time (s) | Time ÷ time at 25% | Peak memory (MB) |
+|----------:|-------:|--------------:|-------------------:|-----------------:|
+| 25% | 7,500 | | 1 | |
+| 50% | 15,000 | | | |
+| 75% | 22,500 | | | |
+| 100% | 30,000 | | | |
+
+::: {.callout-note}
+### Questions
+
+1. Does the time grow linearly with the number of points? If not, how does it grow? (Compare the ratios with 2×, 3× and 4× for linear scaling, and 4×, 9× and 16× for quadratic scaling.)
+2. How does the peak memory change with the amount of data?
+3. If you had only run the 25% and 50% tests, what time would you have predicted for 100% of the data? How far from the measured time is it?
+:::
+
+::: {.callout-tip collapse="true"}
+### Solution
+
+Our results (yours will be different in absolute terms, but the ratios should be similar):
+
+| Data used | Points | Wall time (s) | Time ÷ time at 25% | Peak memory (MB) |
+|----------:|-------:|--------------:|-------------------:|-----------------:|
+| 25% | 7,500 | 8.4 | 1.0 | 14.0 |
+| 50% | 15,000 | 32.5 | 3.9 | 15.2 |
+| 75% | 22,500 | 73.6 | 8.8 | 16.4 |
+| 100% | 30,000 | 136.1 | 16.2 | 17.8 |
+
+1. The scaling is **quadratic**: using 2×, 3× and 4× more points takes about 4×, 9× and 16× longer. This is what we expect from an algorithm that compares every point with every other point (n × n pairs). A straight-line extrapolation would have been badly wrong.
+2. The memory grows only slightly (it is dominated by the Python interpreter, with a small part that grows linearly with the number of points), so it is **not** a limiting factor for this program.
+3. Assuming linear scaling from the 25% and 50% runs, we would have predicted about 2 × 32.5 s = 65 s for the whole dataset, **half** of the real time (136 s). With the quadratic model, 8.4 s × 4² = 134 s, within 2% of the measured value.
+:::
+
+## Task 3: estimate a real project
+
+Suppose now that your project needs to analyse **25 point clouds, each with 60,000 points** (twice as many as our dataset), and that you will run them one after the other on a single core each (for example, as an array job with 25 tasks).
+
+Using your measurements and the method of the previous pages:
+
+1. Estimate the wall-clock time of one run with 60,000 points
+2. Calculate the core-hours of one run and of the whole project
+3. Apply safety factors (use 1.4× for failed jobs, 2.0× for development and 1.2× for the scaling error) and give the total number of core-hours to request
+4. Choose the resources for each job in the array: number of cores, memory and time limit
+
+::: {.callout-tip collapse="true"}
+### Solution
+
+Using our measurements (136 s for 30,000 points) and the quadratic scaling, doubling the number of points makes each run 2² = 4 times longer:
+
+1. Time per run: 136 s × 4 = 544 s, about 9 minutes
+2. Core-hours per run: 544 s × 1 core ÷ 3600 = 0.15 core-hours. For 25 runs: 0.15 × 25 = **3.8 core-hours**
+3. Safety factors: 1.4 × 2.0 × 1.2 = 3.36, so 3.8 × 3.36 = **about 13 core-hours** to request
+4. For each job: 1 core (the program does not use more), memory 1 GB (the program needs about 20 MB, so this is already a very generous margin), and a time limit of, for example, 20 minutes, which is twice the 9 minutes expected. The jobs are short, so they should start quickly
+
+Had we used the straight-line (linear) extrapolation, we would have requested half of the time and the jobs would have run out of time.
+:::
+
+## Extension A: does it use several cores well?
+
+The program has an option, `--workers`, to share the work between several processes. Run it with 1, 2 and 4 workers on the 50% dataset (in an allocation with at least 4 cores) and measure the speed-up and the efficiency:
+
+```bash
+for workers in 1 2 4; do
+    /usr/bin/time -o scaling_results.log -a \
+        -f "workers=${workers} wall=%e user=%U sys=%S maxRSS_KB=%M" \
+        python neighbour_counts.py points_50.csv --workers $workers > /dev/null
+done
+```
+
+| Workers | Wall time (s) | Speed-up $T(1)/T(N)$ | Efficiency $S/N$ | CPU time (s) |
+|--------:|--------------:|---------------------:|-----------------:|-------------:|
+| 1 | | 1 | 100% | |
+| 2 | | | | |
+| 4 | | | | |
+
+::: {.callout-note}
+### Questions
+
+1. How well does the program scale with the number of workers?
+2. Does the total CPU time change when you add workers? What does that mean for the core-hours of a run?
+3. With the quadratic scaling in mind, what would you choose for the 25-run project of Task 3: one core per run, or several cores?
+:::
+
+::: {.callout-tip collapse="true"}
+### Hints
+
+On a 2-core test machine we measured 32.5 s with one worker and 16.8 s with two workers: a speed-up of 1.9 and an efficiency of 96%, with the CPU time (user) staying the same, about 33 s. When efficiency is this high, the core-hours barely change with the number of cores, so using more cores is a way of getting the results sooner. With 25 independent runs you can also get this by running them at the same time, so one core per run is simple and efficient; use several cores only if you need each result quickly.
+
+How far the efficiency drops with 4 workers depends on the number of physical cores in your node: if some of them are busy with other users' jobs, or if you asked for fewer cores than workers, the time will not improve.
+:::
+
+## Extension B: when does memory matter?
+
+By default the program does not keep the list of neighbours of each point, only their number. With the option `--store-neighbours` it keeps them, and if you also increase the search radius, the number of neighbours grows very quickly. Run the 25% and 50% datasets again with
+
+```bash
+/usr/bin/time -f "wall=%e maxRSS_KB=%M" \
+    python neighbour_counts.py points_25.csv --radius 0.2 --store-neighbours
+```
+
+(and the same with `points_50.csv`). How does the peak memory grow now? What would you expect for 100% of the data, and what would you request for it in a job script?
+
+::: {.callout-tip collapse="true"}
+### Hints
+
+In our test the peak memory grew from 71 MB (25%) to 245 MB (50%): the memory now grows with the number of *pairs* of neighbouring points, so it also scales quadratically with the number of points. Doubling the data again (100%) multiplies the memory by about 4 once more: we measured 935 MB, nearly 1 GB, where a request of 1 GB would have been too tight and the job would have been killed. With a margin, 2 GB would be the sensible request for this case. Not every program has a flat memory profile: always check how the memory grows as well as the time.
+:::
+
+## What have we learned?
+
+- A small dataset does not mean a cheap calculation: the cost depends on the algorithm, and here it grows with the *square* of the number of points
+- Measuring with 3 or 4 sizes shows the scaling that you would not guess from a single test
+- Wall time, CPU time and peak memory tell you how many cores to use and how much memory to ask for
+- Converting the results into a request needs the extrapolation to the full problem, the number of runs and some safety factors
+
+[Resources](980-resources.qmd)

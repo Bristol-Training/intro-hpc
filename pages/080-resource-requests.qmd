@@ -1,0 +1,64 @@
+---
+title: "Converting benchmarks to resource requests"
+---
+
+Once you have a set of benchmark measurements, the last step is to turn them into the numbers you will put in your job scripts (per-job requests) and in your project proposal or allocation request (total core-hours).
+
+## From benchmarks to core-hours
+
+1. **Pick a scaling model** from your test results (linear, quadratic, ...)
+2. **Extrapolate** to the full problem size
+3. **Choose the parallel configuration** with a good balance between speed and efficiency (see the [parallel scaling](060-hpc-resources.qmd) results: more cores are not always better value)
+4. **Calculate the core-hours per run**
+5. **Multiply by the number of runs** (tasks, parameter sets, repetitions...)
+6. **Add safety factors**
+
+## Safety factors
+
+A benchmark is a prediction, and predictions are wrong. Typical reasons to add a margin are
+
+| Reason | Example factor |
+|--------|:--------------:|
+| Failed or repeated jobs (crashes, jobs that run out of time, queue problems) | 1.4× |
+| Development and testing as the project evolves, extra analyses or reruns | 2.0× |
+| Errors in the scaling extrapolation | 1.2× |
+
+The factors are multiplied: 1.4 × 2.0 × 1.2 = **3.36**. These are just examples; use your own judgement, with larger margins when the extrapolation is longer or the code is less predictable.
+
+::: {.callout-warning}
+Request memory and run time in your job scripts with some margin too, since a job that exceeds either limit is killed and its work is lost. But do not overdo it: a very generous time limit can make your job wait longer in the queue.
+:::
+
+## Worked example: climate study
+
+::: {.callout-note}
+### Scenario
+
+| | |
+|---|---|
+| **Program** | `climate_sim` |
+| **Test data** | 20% of the full grid (1 simulated year) |
+| **Hardware** | 8 cores, 75% parallel efficiency |
+| **Measured time** | 45 minutes of wall-clock time |
+| **Scaling** | Linear with the size of the grid |
+| **Parameter sets** | 50 different configurations |
+:::
+
+### Resource calculation
+
+1. **Full problem:** 5× larger than the test (20% → 100%)
+2. **Time per run:** 45 min × 5 = 225 min = 3.75 hours
+3. **Core-hours per run:** 3.75 h × 8 cores = 30 core-hours
+4. **Base cost:** 30 core-hours × 50 runs = 1,500 core-hours
+5. **Safety factors:** 1.4 × 2.0 × 1.2 = 3.36
+6. **Total request:** 1,500 × 3.36 = **5,040 core-hours**
+
+The measured 45 minutes already includes the 75% parallel efficiency, because it was measured on 8 cores. The efficiency would only be needed if you wanted to *predict* the time with a different number of cores.
+
+::: {.callout-tip}
+### What goes in the job script?
+
+For each individual run, the numbers above suggest a job with `--cpus-per-task=8` and a time limit of at least 3.75 hours, so something like `--time=05:00:00` leaves a reasonable margin. The 50 runs can be submitted together as an [array job](040-slurm.qmd).
+:::
+
+[Hands-on exercise](100-exercise.qmd)
